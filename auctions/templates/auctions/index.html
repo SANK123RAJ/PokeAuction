@@ -1,0 +1,83 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+
+
+
+{% if mode == "Alllisting" %}   
+<h2>Active Listings</h2>
+
+<div style="display: flex; justify-content:flex-start; flex-wrap: wrap;margin: 10px;">
+
+    {% for listing in Listing %}
+    <a href="{% url 'listing' listing.id %}" style=" text-decoration: none;
+    color: inherit;">
+    <div class="card" style="width: 18rem; margin: 15px;">
+        <img src="{{listing.url}}" class="card-img-top" alt="{{listing.name}}">
+        <div class="card-body">
+          <h5 class="card-title">{{listing.name}}</h5>
+          <p class="card-text">{{listing.description}}</p>
+          <h5 class="card-title">Rs {{listing.price}}/-</h5>
+          <a href="{% url 'listing' listing.id %}" class="btn btn-primary">View</a>
+        </div>
+      </div>
+    </a>
+
+{% endfor %}   
+</div>
+{% endif %}
+
+
+
+{% if mode == "WatchList" %}
+
+<h2>Watch-List</h2>
+
+<div style="display: flex; justify-content:flex-start; flex-wrap: wrap;margin: 10px;">
+
+    {% for listing in watchlists %}
+    <a href="{% url 'listing' listing.id %} " style = "text-decoration: none; color: inherit;">
+    <div class="card" style="width: 18rem; margin: 10px;">
+        <img src="{{listing.url}}" class="card-img-top" alt="{{listing.name}}">
+        <div class="card-body">
+          <h5 class="card-title">{{listing.name}}</h5>
+          <p class="card-text">{{listing.description}}</p>
+          <h5 class="card-title">Rs {{listing.price}}/-</h5>
+          <a href="{% url 'listing' listing.id %}" class="btn btn-primary">View</a>
+        </div>
+      </div>
+    </a>
+
+      {% endfor %}   
+</div>
+{% endif %}
+
+
+
+{% if mode == "CategoryList" %}
+
+<h2>Category-List</h2>
+
+<div style="display: flex; justify-content:flex-start; flex-wrap: wrap;margin: 10px;">
+
+    {% for listing in currentcategorylist %}
+    <a href="{% url 'listing' listing.id %} " style = "text-decoration: none; color: inherit;">
+    <div class="card" style="width: 18rem; margin: 10px;">
+        <img src="{{listing.url}}" class="card-img-top" alt="{{listing.name}}">
+        <div class="card-body">
+          <h5 class="card-title">{{listing.name}}</h5>
+          <p class="card-text">{{listing.description}}</p>
+          <h5 class="card-title">Rs {{listing.price}}/-</h5>
+          <a href="{% url 'listing' listing.id %}" class="btn btn-primary">View</a>
+        </div>
+      </div>
+    </a>
+
+      {% endfor %}   
+</div>
+{% endif %}
+
+   
+
+{% endblock %}

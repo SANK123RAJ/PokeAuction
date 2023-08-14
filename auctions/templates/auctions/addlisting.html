@@ -1,0 +1,57 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Add Listing</h2>
+
+   {% if message %}
+   <div class="alert alert-success" role="alert">
+    {{message}}
+  </div>
+  {% endif %}
+   <form action="{% url 'addlisting' %}" method="post">
+    {% csrf_token %}
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Title</span>
+        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name  ="Name">
+      </div>
+
+      <div class="input-group">
+        <span class="input-group-text">Description</span>
+        <textarea class="form-control" aria-label="With textarea" name="description"></textarea>
+      </div> 
+
+
+
+      <label for="basic-url" class="form-label">Set Price</label>
+      <div class="input-group mb-3">
+        <span class="input-group-text">Rupees</span>
+        <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" name="price">
+        <span class="input-group-text">.00</span>
+      </div>
+
+      <div class="mb-3">
+        <label for="basic-url" class="form-label">Image URL</label>
+        <div class="input-group">
+          <span class="input-group-text" id="basic-addon3">https://pokemon.com/Images/</span>
+          <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3 basic-addon4" name="url">
+        </div>
+        <div class="form-text" id="basic-addon4">Images help to rech out more to your bidders !</div>
+      </div>
+
+   
+      <label for="basic-url" class="form-label">Category :</label>
+      <select name="category" >
+        {% for category in categories %}
+        <option value= "{{category}}" class = "dropdown-item">{{category}}</option>
+        {% endfor %}
+      </select>
+
+
+        <div class="col-12" style="margin-left: -10px;margin-top: 4px;">
+            <button class="btn btn-primary" type="submit">Add Listing</button>
+          </div>
+
+   </form>
+
+
+{% endblock %}

@@ -1,0 +1,177 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+
+
+    <div>
+        <div class="card mb-3" style="max-width: 100%;margin: 0%;">
+            <div class="row g-0" style="display: flex; justify-content: flex-start; align-items: center;" >
+              <div class="col-md-4">
+                <img src="{{Listing.url}}" class="img-fluid rounded-start" alt="{{Listing.name}}">
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  {% if Listing.isactive == False %}
+                  {% if bidder == request.user.username %}
+                  <div class="alert alert-success" role="alert">
+                    Congratulations ! You are the Winner !
+                  </div>
+                  {% else %}
+                  <div class="alert alert-warning" role="alert">
+                    This Pokemon has been Sold-out to <strong>{{bidder}}</strong>
+                  </div>
+                  {% endif %}
+                  {% endif %}
+
+                  {% if message %}
+                  {% if Success == False %}
+                  <div class="alert alert-warning" role="alert">
+                    {{message}}
+                  </div>
+                  {% else %}
+                  <div class="alert alert-success" role="alert">
+                    {{message}}
+                  </div>
+                  {% endif %}
+                  {% endif %}
+
+                  {% if user.is_authenticated %}
+                  <div style="display: flex;">
+                    <h1 style="font-size: 100px;">{{Listing.name}}</h1>
+                    <div class="container" style="margin-left: auto; display: flex; justify-content: flex-end;align-items: center;" >
+                      <p>
+                        {% if watchlisted == False %}
+                        <a href="{% url 'watchlist' Listing.id %}">
+                          <button type="button" class="btn btn-default btn-sm" style="background-color: cadetblue; ">
+                              <span class="glyphicon
+                                  glyphicon-shopping-cart">
+                              </span>
+                              <b style="color: aliceblue; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: lighter;">Add to WatchList</b>
+                          </button>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'removewatchlist' Listing.id %}">
+                          <button type="button" class="btn btn-default btn-sm" style="background-color:rgb(198, 19, 19);  ">
+                              <span class="glyphicon
+                                  glyphicon-shopping-cart">
+                              </span>
+                              <b style="color: aliceblue; font-family: Verdana, Geneva, Tahoma, sans-serif; font-weight: lighter;">Remove from WatchList</b>
+                          </button>
+                          </a>
+
+                        {% endif %}
+                      </p>
+                  </div>
+                  </div>
+                  {% else %}
+                  <h1 style="font-size: 100px;">{{Listing.name}}</h1>
+                  {% endif %}
+                  
+                  <h5 class="card-title" style="margin-top: 10px;">A {{Listing.category.categoryname}} Type Pokemon</h5>
+                  <p class="card-text">{{Listing.description}}</p>
+                  <p class="card-text"><small class="text-body-secondary">Uploaded on {{Listing.time}}</small></p>
+                  <div style="display: flex; justify-content:space-between;">
+                    <p class="card-text" ><small class="text-body-secondary">Owned by <strong>{{Listing.owner.username}}</strong></small></p>
+                    <h1 style="font-size: 70px; margin-right: 0px;">Rs {{Listing.price}}/-</h1>
+                  </div>
+                  {% if user.is_authenticated %}
+                  
+                  {% if Listing.isactive == False %}
+                    <input type="hidden" name="Submit" value="False">
+                  <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 100px;background-color: rgb(173, 166, 166); border-color: rgb(173, 166, 166) ;">Auction Closed</button>
+                  {% else %}
+                      {% if Form == True %}
+                      <form action="{% url 'addbid' Listing.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="Submit" value="True">
+                        <div style="display: flex; justify-content: flex-start;">
+                        <div class="input-group mb-3" style="max-width: 150px;">
+                         <span class="input-group-text">Rs</span>
+                         <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" name="bid">
+                        <span class="input-group-text">/-</span>
+                      
+                        </div>
+                        <div style="margin-top: -6px;">
+                          <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 25px;background-color: green; border-color: green;">Place Bid</button>
+
+                        </div>
+                    
+                      </div>
+                     </form>
+                  
+                      {% else %}
+                          {% if request.user  != Listing.owner %}
+                          <form action="{% url 'addbid' Listing.id %}" method="post">
+                          {% csrf_token %}
+                         <input type="hidden" name="Submit" value="False">
+                         <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 100px;">Bid on this</button>
+                         </form>
+                         {% else %}
+                         <form action="{% url 'closebid' Listing.id %}" method="post">
+                         {% csrf_token %}
+                         <input type="hidden" name="Submit" value="False">
+                         <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 100px; background-color: rgb(250, 71, 71); border-color: rgb(250, 71, 71);">Close Bid</button>
+                         </form>
+                          {% endif %} 
+                    {% endif %}
+                  {% endif %}   
+                  
+              {% else %}
+              <a href="{% url 'login' %}" class="btn btn-primary btn-lg" style="margin-left: 100px;">Log in to Bid</a>
+              {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+
+    <h1 style="margin-top: 100px;">Comments</h1>
+    <div style="margin-top: 25px;">
+        
+        {% if user.is_authenticated %}
+        <form action="{% url 'addcomment' Listing.id %}" method="post">
+          {% csrf_token %}
+        <div style="display: flex; justify-content: flex-start; width: 100%; flex-direction: row; align-items: center;">
+        <div class="input-group">
+            <span class="input-group-text" style="height: 50px;">Comment</span>
+            <textarea class="form-control" aria-label="With textarea" name="comment" style="height: 50px;"></textarea>
+          </div>
+
+          <div class="col-3" style="margin-left: -10px;margin-top: 4px;">
+            <button class="btn btn-primary" type="submit">Add Comment</button>
+          </div>
+        </div>
+          </form>   
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Log in to Comment</a>
+        {% endif %}   
+
+     </div>  
+     
+     {% for commenting in comments %}
+     
+     {% if commenting == Null or commenting == None %}
+     <hr>
+     "No Comments made"
+     {% else %}
+     {% if commenting.commentmade != ""%}
+     <hr>
+     <strong>{{commenting.commentby}}:</strong>{{commenting.commentmade}}
+     {% endif %}
+     {% endif %}
+     {% endfor %}
+     
+
+
+
+
+   
+  
+   
+       
+
+
+   
+
+{% endblock %}
